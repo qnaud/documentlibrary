@@ -1,19 +1,30 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package org.url.documentlibrary.model;
 
 /**
- *
- * @author Quentin
+ * Section est la classe qui représente les sections d'un document
+ * 
+ * @author Quentin NAUD, Benjamin NEILZ
+ * @version 1.0
  */
 public class Section {
     
+    /**
+     * Intitulé d'une section
+     */
     private String titre;
+    
+    /**
+     * Contenu d'une section
+     */
     private String contenu;
 
+    /**
+     * Construction de Section
+     * 
+     * @param titre
+     * @param contenu 
+     */
     public Section(String titre, String contenu) {
         this.titre = titre;
         this.contenu = contenu;
