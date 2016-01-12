@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:doc="http://www.doc.org" xmlns="http://www.doc.org" targetNamespace="http://www.doc.org">
+	<!-- Un article contient un titre, un résumé, des mots clés et des sections -->
+	<xsd:element name="article">
+		<xsd:complexType>
+    		<xsd:sequence>
+				<xsd:element ref="titre"/>
+				<xsd:element ref="resume"/>
+				<xsd:element ref="motcles"/>
+				<xsd:element ref="section" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+		<!-- Les mots clés sont uniques -->
+		<xsd:unique name="MotClesUnique">
+			<xsd:selector xpath="doc:motcles/doc:motcle" />
+			<xsd:field xpath="." />
+		</xsd:unique>
+	</xsd:element>
+	<xsd:element name="titre" type="xsd:string"/>
+	<xsd:element name="resume" type="xsd:string"/>
+	<xsd:element name="motcles" type="MotClesType"/>
+	<xsd:element name="section" type="SectionType"/>
+	<xsd:element name="motcle" type="xsd:string"/>
+	
+	<!-- Définition du type mots clés -->
+	<xsd:complexType name="MotClesType">
+    	<xsd:sequence>
+			<xsd:element ref="motcle" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<!-- Définition du type section -->
+	<xsd:complexType name="SectionType">
+		<xsd:simpleContent>
+	      	<xsd:extension base="xsd:string">
+				<xsd:attribute name="titre" type="xsd:string" use="required"/>
+	      	</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>	
+</xsd:schema>
