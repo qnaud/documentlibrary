@@ -223,10 +223,11 @@ public class DocumentLibraryWS {
         Document document = this.documents.get(index);
         
         if(document != null && document.isStocke()){
+            StaxSerializer.transformXSL(DocumentLibraryWS.FILES_REPOSITORY + "/" + document.getNom());
             // Création et retour du PDF
             return new PDF(
-                    document.getNom().replace(".xml",".pdf"),
-                    StaxSerializer.transformXSL(DocumentLibraryWS.FILES_REPOSITORY + "/" + document.getNom())
+                document.getNom().replace(".xml",".pdf"),
+                StaxSerializer.transformXSL(DocumentLibraryWS.FILES_REPOSITORY + "/" + document.getNom())
             );
         }
         

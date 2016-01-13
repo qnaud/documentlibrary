@@ -24,7 +24,7 @@ public class PDF {
      * Contenu binaire formaté
      */
     protected byte[] contenu;
-
+    
     /**
      * Constructeur de PDF
      * 

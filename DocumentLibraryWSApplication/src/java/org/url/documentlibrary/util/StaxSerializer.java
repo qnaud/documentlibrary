@@ -15,17 +15,23 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stax.StAXSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import org.apache.fop.apps.FOPException;
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.xmlgraphics.util.MimeConstants;
 import org.url.documentlibrary.model.Document;
 import org.url.documentlibrary.model.Section;
 import org.xml.sax.SAXException;
@@ -203,22 +209,31 @@ public class StaxSerializer {
      * Cette méthode permet d'appliquer une feuille de style à un document XML
      * 
      * @param pathDocument Chemin où est stocké le document XML sur le serveur
-     * @return Tableau binaire du XML transformé
+     * @return Tableau binaire du XML transformé en PDF
      * @throws TransformerConfigurationException
      * @throws TransformerException 
+     * @throws FOPException 
      */
-    public static byte[] transformXSL(String pathDocument) throws TransformerConfigurationException, TransformerException{
+    public static byte[] transformXSL(String pathDocument) throws TransformerConfigurationException, TransformerException, FOPException{
+        
+        // Initialisation fabrique pour FOP
+        FopFactory fopFactory = FopFactory.newInstance();
+        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         
         // Initialisation fabrique pour transformation XSL
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = tFactory.newTransformer(new StreamSource(StaxSerializer.STYLESHEET_NAME));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        // Application de la feuille de style sur le document
-        transformer.transform(new StreamSource(pathDocument), new StreamResult(outputStream));
+	
+        // Configuration en PDF
+        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, outStream);
         
-        // Retour du résultat binarisé
-        return outputStream.toByteArray();
+        // Transformation du XML
+        Result res = new SAXResult(fop.getDefaultHandler());
+        transformer.transform(new StreamSource(pathDocument), res);
+        
+        // Retour du pdf en binaire
+        return outStream.toByteArray();
     } 
     
 }
