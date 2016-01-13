@@ -25,7 +25,14 @@ import org.url.documentlibrary.util.StaxSerializer;
 import org.xml.sax.SAXException;
 
 /**
- * DocumentLibraryWS est la classe qui définie le service web homonyme.
+ * DocumentLibraryWS est la classe qui définie le service web homonyme :
+ * - "demarrage" est exécuté au déploiement du WS et permet de désérialiser les fichiers XML stockés
+ * - "depotDocument" stocke un fichier XML sur le serveur (opération)
+ * - "rechercheDocument" recherche des documents par mots-clés (opération)
+ * - "retourneDocument" recherche un document en fonction d'un identifiant (opération)
+ * - "generePDF" recherche et retourne un document au format PDF (opération)
+ * - "arret" est exécuté à l'arrêt du WS et permet de sérialiser la collection de documents
+ * - "addDocument" permet d'ajouter un document à la collection de documents
  * 
  * @author Quentin NAUD, Benjamin NEILZ
  * @version 1.0
@@ -120,7 +127,7 @@ public class DocumentLibraryWS {
      */
     @WebMethod(operationName = "rechercheDocument")
     public DocumentMap rechercheDocument(@WebParam(name = "motsCles") String[] motsClesFiltres, @WebParam(name = "condition") String condition) {
-     
+
         // Collection de documents trouvés (key : identifiant, value : titre)
         DocumentMap foundDocuments = new DocumentMap();
         Document document;
@@ -215,12 +222,12 @@ public class DocumentLibraryWS {
         // Récupération de l'instance de Document correspondante
         Document document = this.documents.get(index);
         
-        if(document != null){
-            
-            // TODO : appliquer la feuille de style
-            
+        if(document != null && document.isStocke()){
             // Création et retour du PDF
-            return new PDF(document.getNom().replace(".xml",".pdf"),this.retourneDocument(index));
+            return new PDF(
+                    document.getNom().replace(".xml",".pdf"),
+                    StaxSerializer.transformXSL(DocumentLibraryWS.FILES_REPOSITORY + "/" + document.getNom())
+            );
         }
         
         return null;

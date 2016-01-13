@@ -2,6 +2,7 @@
 package org.url.documentlibrary.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +16,12 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stax.StAXSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -25,7 +31,10 @@ import org.url.documentlibrary.model.Section;
 import org.xml.sax.SAXException;
 
 /**
- * StaxSerializer est la classe qui permet de valider et sérialiser/désérialiser du contenu XML
+ * StaxSerializer est la classe qui permet de valider et sérialiser/désérialiser du contenu XML :
+ * - "unserialize" permet de désérialiser du XML en instance de Document
+ * - "serialize" permet de sérialiser une instance de Document en XML
+ * - "transformXSL" permet d'appliquer une feuille de style à un fichier XML
  * 
  * @author Quentin NAUD, Benjamin NEILZ
  * @version 1.0
@@ -41,6 +50,11 @@ public class StaxSerializer {
      * Nom du schéma XSD présent sur le serveur
      */
     private final static String SCHEMA_NAME = "schema.xsd";
+    
+    /**
+     * Nom de la feuille de style présente sur le serveur
+     */
+    private final static String STYLESHEET_NAME = "style.xsl";
             
     /**
      * Cette méthode permet de transformer (désérialiser) un contenu XML binarisé sous forme d'objet Document
@@ -185,4 +199,26 @@ public class StaxSerializer {
         return strw.toString();
     }
 
+    /**
+     * Cette méthode permet d'appliquer une feuille de style à un document XML
+     * 
+     * @param pathDocument Chemin où est stocké le document XML sur le serveur
+     * @return Tableau binaire du XML transformé
+     * @throws TransformerConfigurationException
+     * @throws TransformerException 
+     */
+    public static byte[] transformXSL(String pathDocument) throws TransformerConfigurationException, TransformerException{
+        
+        // Initialisation fabrique pour transformation XSL
+        TransformerFactory tFactory = TransformerFactory.newInstance();
+        Transformer transformer = tFactory.newTransformer(new StreamSource(StaxSerializer.STYLESHEET_NAME));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        // Application de la feuille de style sur le document
+        transformer.transform(new StreamSource(pathDocument), new StreamResult(outputStream));
+        
+        // Retour du résultat binarisé
+        return outputStream.toByteArray();
+    } 
+    
 }
