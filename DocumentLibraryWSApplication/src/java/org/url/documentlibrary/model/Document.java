@@ -27,6 +27,11 @@ public class Document {
     private String resume;
     
     /**
+     * Permet de déterminer si le document possède un fichier XML sur le serveur
+     */
+    private boolean stocke = false;
+    
+    /**
      * Liste des sections contenues dans le document
      */
     private ArrayList<Section> sections;
@@ -40,8 +45,8 @@ public class Document {
      * Constructeur de Document
      */
     public Document() {
-        this.sections = new ArrayList<Section>();
-        this.motCles = new ArrayList<String>();
+        this.sections = new ArrayList<>();
+        this.motCles = new ArrayList<>();
     }
     
     /**
@@ -51,8 +56,8 @@ public class Document {
      */
     public Document(String nom) {
         this.nom = nom;
-        this.sections = new ArrayList<Section>();
-        this.motCles = new ArrayList<String>();
+        this.sections = new ArrayList<>();
+        this.motCles = new ArrayList<>();
     }
 
     /**
@@ -64,8 +69,8 @@ public class Document {
     public Document(String titre, String resume) {
         this.titre = titre;
         this.resume = resume;
-        this.sections = new ArrayList<Section>();
-        this.motCles = new ArrayList<String>();
+        this.sections = new ArrayList<>();
+        this.motCles = new ArrayList<>();
     }
     
     /**
@@ -194,5 +199,23 @@ public class Document {
      */
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    /**
+     * Get the value of stocke
+     *
+     * @return the value of stocke
+     */
+    public boolean isStocke() {
+        return stocke;
+    }
+    
+    /**
+     * Set the value of stocke
+     *
+     * @param stocke new value of stocke
+     */
+    public void setStocke(boolean stocke) {
+        this.stocke = stocke;
     }
 }
