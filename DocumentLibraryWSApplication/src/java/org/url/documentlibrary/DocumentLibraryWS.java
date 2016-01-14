@@ -132,8 +132,17 @@ public class DocumentLibraryWS {
         DocumentMap foundDocuments = new DocumentMap();
         Document document;
         
+        // Aucun mot clé saisie
+        if(motsClesFiltres.length < 1){
+            // Récupère tous les documents
+            for(Entry<Integer, Document> documentEntry : this.documents.entrySet()){
+                // Document courant
+                document = documentEntry.getValue();
+                foundDocuments.getRealMap().put(documentEntry.getKey(), document.getTitre());
+            }
+        }
         // OU
-        if(condition != null && condition.toUpperCase().equals("OU")){
+        else if(condition != null && condition.toUpperCase().equals("OU")){
             boolean isFind;
             // Parcourir tous les documents
             for(Entry<Integer, Document> documentEntry : this.documents.entrySet()){
@@ -155,7 +164,7 @@ public class DocumentLibraryWS {
                     if(isFind) 
                         break;
                 }
-            }
+            } 
         }
         // ET est la condition par défaut
         else{
@@ -176,7 +185,7 @@ public class DocumentLibraryWS {
                 // alors mapping du document
                 if(nombreDeCorrespondance != 0 && nombreDeCorrespondance >= motsClesFiltres.length) 
                     foundDocuments.getRealMap().put(documentEntry.getKey(), document.getTitre());
-            }
+            }            
         }
         
         // Retour de la liste des documents trouvés
